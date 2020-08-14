@@ -52,13 +52,19 @@ class DecoderCompiler {
       return this.decoderStatements.get(name)!
     })
 
-    const decoderInputStatement = ts.addSyntheticLeadingComment(
+    const eslintDisableStatement = ts.addSyntheticLeadingComment(
       this.decoderFactory.importStatement(),
+      ts.SyntaxKind.MultiLineCommentTrivia,
+      " eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars "
+    )
+
+    const leadingComments = ts.addSyntheticLeadingComment(
+      eslintDisableStatement,
       ts.SyntaxKind.SingleLineCommentTrivia,
       " DO NOT EDIT - Generated using Aegis"
     )
 
-    return [decoderInputStatement, ...enumImportStatements, ...orderedDecoders]
+    return [leadingComments, ...enumImportStatements, ...orderedDecoders]
   }
 
   private decoderStatement(decoderName: string, node: ts.Node): ts.Statement {
